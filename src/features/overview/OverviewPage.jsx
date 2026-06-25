@@ -32,7 +32,9 @@ const durationLabels = {
 export default function OverviewPage() {
   const { t } = useLocale();
   const { configs } = useAllConfigs();
-  const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
+  const configList = Object.entries(configs)
+    .map(([id, c]) => ({ id, ...c }))
+    .sort((a, b) => (a.channelName || a.id).localeCompare(b.channelName || b.id));
   const [selectedConfigId, setSelectedConfigId] = useState("");
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const configId = selectedConfigId || configList[0]?.id || "";
