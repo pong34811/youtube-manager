@@ -151,7 +151,8 @@ export default function OverviewPage() {
           {contentPerformance && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <Card>
-                <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.topContent")}</h3>
+                <h3 className="text-base text-[var(--text-primary)] mb-1">{t("audience.topContent")}</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">เรียงตาม Engagement Rate (👍+💬 ÷ 👁) — ยิ่งสูง = ผู้ชมโต้ตอบกับคลิปนี้มาก</p>
                 {contentPerformance.topByEngagement.length > 0 ? (
                   <div className="space-y-3">
                     {contentPerformance.topByEngagement.slice(0, 5).map((v, i) => (
@@ -159,11 +160,13 @@ export default function OverviewPage() {
                         <span className="text-sm  text-[var(--text-secondary)] w-6 mt-1">{i + 1}.</span>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-[var(--text-primary)] truncate">{v.snippet.title}</p>
-                          <div className="flex space-x-2 mt-1">
+                          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
                             <Badge variant={v.engagementRate > 10 ? "success" : v.engagementRate > 5 ? "info" : "warning"}>
                               {v.engagementRate}% {t("audience.engagement")}
                             </Badge>
                             <span className="text-xs text-[var(--text-secondary)]">{formatNumber(v.views)} {t("audience.views")}</span>
+                            <span className="text-xs text-[var(--text-secondary)]">👍 {formatNumber(v.likes)}</span>
+                            <span className="text-xs text-[var(--text-secondary)]">💬 {formatNumber(v.comments)}</span>
                             <span className="text-xs text-[var(--text-secondary)]">{new Date(v.snippet.publishedAt).toLocaleDateString("en-GB")}</span>
                           </div>
                         </div>
@@ -175,7 +178,8 @@ export default function OverviewPage() {
                 )}
               </Card>
               <Card>
-                <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.audiencePreference")}</h3>
+                <h3 className="text-base text-[var(--text-primary)] mb-1">{t("audience.audiencePreference")}</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">ยอดดูเฉลี่ยแยกตามความยาวคลิป — ช่วยบอกว่าควรทำคลิปยาวเท่าไหร่</p>
                 {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 ? (
                   <div className="space-y-3">
                     <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
@@ -194,8 +198,13 @@ export default function OverviewPage() {
                       </div>
                     ))}
                   </div>
-                ) : (
+                  ) : (
                   <p className="text-sm text-[var(--text-secondary)] py-8 text-center">{t("audience.noDuration")}</p>
+                )}
+                {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 && (
+                  <p className="text-xs text-[var(--text-secondary)] mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                    💡 สรุป: ช่วง "{t(durationLabels[contentPerformance.durationPerformance.filter((d) => d.count > 0).sort((a, b) => b.avgViews - a.avgViews)[0]?.range] || contentPerformance.durationPerformance.filter((d) => d.count > 0).sort((a, b) => b.avgViews - a.avgViews)[0]?.range)}" มียอดดูเฉลี่ยสูงสุด
+                  </p>
                 )}
               </Card>
             </div>
