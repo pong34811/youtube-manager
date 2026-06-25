@@ -143,6 +143,11 @@ export default function OverviewPage() {
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{performance.totalVideos}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
+                  {selectedYear !== "all" && trends?.videos != null && (
+                    <span className={`text-xs ${trends.videos >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {trends.videos >= 0 ? "▲" : "▼"} {Math.abs(trends.videos)}% เทียบกับปีที่แล้ว
+                    </span>
+                  )}
                 </div>
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{performance.avgPerMonth}</p>
