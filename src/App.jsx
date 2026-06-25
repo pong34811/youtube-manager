@@ -6,6 +6,7 @@ import MainLayout from "./components/layout/MainLayout";
 import LoginPage from "./features/auth/LoginPage";
 import OverviewPage from "./features/overview/OverviewPage";
 import ChannelsPage from "./features/channels/ChannelsPage";
+import VideosPage from "./features/videos/VideosPage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -26,7 +27,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route index element={<OverviewPage />} />
             <Route path="channels" element={<ChannelsPage />} />
-            <Route path="videos" element={<div className="text-[var(--text-primary)]">Videos Page</div>} />
+            <Route path="videos" element={<VideosPage />} />
             <Route path="analytics" element={<div className="text-[var(--text-primary)]">Analytics Page</div>} />
             <Route path="revenue" element={<div className="text-[var(--text-primary)]">Revenue Page</div>} />
             <Route path="audience" element={<div className="text-[var(--text-primary)]">Audience Page</div>} />
