@@ -82,9 +82,14 @@ export default function OverviewPage() {
     };
   })();
 
-  const availableYears = videos?.length
-    ? [...new Set(videos.map(v => new Date(v.snippet.publishedAt).getFullYear()))].sort((a, b) => b - a)
-    : [];
+  const availableYears = (() => {
+    const fromYear = channelData?.snippet?.publishedAt
+      ? new Date(channelData.snippet.publishedAt).getFullYear()
+      : currentYear;
+    const years = [];
+    for (let y = currentYear; y >= fromYear; y--) years.push(y);
+    return years;
+  })();
   const displayYears = availableYears.length > 0 ? availableYears : [currentYear];
   const yearOptions = [
     { value: "all", label: "ทั้งหมด" },
