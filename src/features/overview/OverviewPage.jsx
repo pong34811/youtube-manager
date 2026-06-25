@@ -36,7 +36,8 @@ export default function OverviewPage() {
   const selectedConfig = configList.find((c) => c.id === configId);
   const currentYear = new Date().getFullYear();
   const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
-  const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
+  const yearParam = selectedYear === "all" ? null : Number(selectedYear);
+  const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, yearParam);
 
   const isLoading = channelLoading || videosLoading;
 
@@ -56,10 +57,36 @@ export default function OverviewPage() {
 
   const contentPerformance = videos ? analyzeContentPerformance(videos) : null;
 
-  const yearOptions = Array.from({ length: 5 }, (_, i) => {
-    const y = currentYear - i;
-    return { value: y, label: String(y + 543) };
-  });
+  // Compute year-over-year trends from video data
+  const trends = (() => {
+    if (!videos || videos.length < 2) return null;
+    const byYear = {};
+    videos.forEach(v => {
+      const y = new Date(v.snippet.publishedAt).getFullYear();
+      if (!byYear[y]) byYear[y] = [];
+      byYear[y].push(v);
+    });
+    const sortedYears = Object.keys(byYear).sort((a, b) => b - a);
+    if (sortedYears.length < 2) return null;
+    const curr = byYear[sortedYears[0]];
+    const prev = byYear[sortedYears[1]];
+    const currViews = curr.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0);
+    const prevViews = prev.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0);
+    return {
+      views: prevViews > 0 ? Math.round(((currViews - prevViews) / prevViews) * 100) : null,
+      subs: null,
+      videos: prev.length > 0 ? Math.round(((curr.length - prev.length) / prev.length) * 100) : null,
+    };
+  })();
+
+  const availableYears = videos?.length
+    ? [...new Set(videos.map(v => new Date(v.snippet.publishedAt).getFullYear()))].sort((a, b) => b - a)
+    : [];
+  const displayYears = availableYears.length > 0 ? availableYears : [currentYear];
+  const yearOptions = [
+    { value: "all", label: "ทั้งหมด" },
+    ...displayYears.map(y => ({ value: String(y), label: String(y + 543) })),
+  ];
 
   return (
     <div className="animate-fade-in">
@@ -74,7 +101,7 @@ export default function OverviewPage() {
             />
           </div>
           <div className="w-32">
-            <Select options={yearOptions} value={selectedYear} onChange={(v) => setSelectedYear(Number(v))} />
+            <Select options={yearOptions} value={String(selectedYear)} onChange={(v) => setSelectedYear(v)} />
           </div>
         </div>
       </div>
@@ -111,6 +138,7 @@ export default function OverviewPage() {
             totalViews={parseInt(channelData?.statistics?.viewCount || 0)}
             totalSubs={parseInt(channelData?.statistics?.subscriberCount || 0)}
             totalVideos={parseInt(channelData?.statistics?.videoCount || 0)}
+            trends={trends}
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

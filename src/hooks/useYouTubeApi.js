@@ -14,7 +14,7 @@ export function useChannelVideos(apiKey, channelId, year) {
   return useQuery({
     queryKey: ["videos", apiKey, channelId, year],
     queryFn: () => fetchChannelVideosForYear(apiKey, channelId, year),
-    enabled: !!apiKey && !!channelId && !!year,
+    enabled: !!apiKey && !!channelId && year !== undefined,
     staleTime: 5 * 60 * 1000,
   });
 }

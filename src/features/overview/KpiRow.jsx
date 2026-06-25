@@ -1,7 +1,7 @@
 import { useLocale } from "../../hooks/useLocale";
 import KpiCard from "../../components/ui/KpiCard";
 
-export default function KpiRow({ totalViews, totalSubs, totalVideos }) {
+export default function KpiRow({ totalViews, totalSubs, totalVideos, trends }) {
   const { t } = useLocale();
   const format = (n) => {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
@@ -10,9 +10,9 @@ export default function KpiRow({ totalViews, totalSubs, totalVideos }) {
   };
 
   const kpis = [
-    { label: t("overview.totalViews"), value: format(totalViews), trend: 12, trendLabel: "เทียบกับปีที่แล้ว", icon: "👁" },
-    { label: t("overview.totalSubs"), value: format(totalSubs), trend: 5, trendLabel: "เทียบกับปีที่แล้ว", icon: "👥" },
-    { label: t("overview.publishedVideos"), value: totalVideos?.toLocaleString() || "0", trend: 3, trendLabel: "เทียบกับปีที่แล้ว", icon: "🎬" },
+    { label: t("overview.totalViews"), value: format(totalViews), trend: trends?.views, trendLabel: "เทียบกับปีที่แล้ว", icon: "👁" },
+    { label: t("overview.totalSubs"), value: format(totalSubs), trend: trends?.subs, trendLabel: "เทียบกับปีที่แล้ว", icon: "👥" },
+    { label: t("overview.publishedVideos"), value: totalVideos?.toLocaleString() || "0", trend: trends?.videos, trendLabel: "เทียบกับปีที่แล้ว", icon: "🎬" },
   ];
 
   return (

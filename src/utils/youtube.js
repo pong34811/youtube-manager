@@ -12,16 +12,17 @@ export const fetchChannelVideosForYear = async (apiKey, channelId, year) => {
     const date = new Date(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T00:00:00+07:00`);
     return date.toISOString();
   };
-  const startDate = toBangkokISO(year, 1, 1);
-  const endDate = toBangkokISO(year + 1, 1, 1);
+  const hasYearFilter = year != null;
+  const startDate = hasYearFilter ? toBangkokISO(year, 1, 1) : null;
+  const endDate = hasYearFilter ? toBangkokISO(year + 1, 1, 1) : null;
   let searchResults = [];
   let nextPageToken = "";
 
   try {
     do {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&publishedAfter=${startDate}&publishedBefore=${endDate}&maxResults=50&key=${apiKey}${
-        nextPageToken ? "&pageToken=" + nextPageToken : ""
-      }`;
+      let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=50&key=${apiKey}`;
+      if (hasYearFilter) url += `&publishedAfter=${startDate}&publishedBefore=${endDate}`;
+      if (nextPageToken) url += "&pageToken=" + nextPageToken;
       const response = await fetch(url);
       const data = await response.json();
       if (data.error) throw new Error(data.error.message);
