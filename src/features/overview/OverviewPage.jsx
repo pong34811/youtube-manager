@@ -78,15 +78,23 @@ export default function OverviewPage() {
     const avg = (n, len) => len > 0 ? Math.round(n / len) : 0;
     return {
       views: pct(c.views, p.views),
+      viewsPrev: p.views, viewsCurr: c.views,
       subs: null,
       videos: pct(curr.length, prev.length),
+      videosPrev: prev.length, videosCurr: curr.length,
       avgViews: pct(avg(c.views, curr.length), avg(p.views, prev.length)),
+      avgViewsPrev: avg(p.views, prev.length),
       avgLikes: pct(avg(c.likes, curr.length), avg(p.likes, prev.length)),
+      avgLikesPrev: avg(p.likes, prev.length),
       avgComments: pct(avg(c.comments, curr.length), avg(p.comments, prev.length)),
+      avgCommentsPrev: avg(p.comments, prev.length),
       avgEngagement: (() => {
         const ce = c.views > 0 ? ((c.likes + c.comments) / c.views) * 100 : 0;
         const pe = p.views > 0 ? ((p.likes + p.comments) / p.views) * 100 : 0;
         return pe > 0 ? Math.round((ce - pe) * 100) / 100 : null;
+      })(),
+      avgEngagementPrev: (() => {
+        return p.views > 0 ? Math.round(((p.likes + p.comments) / p.views) * 10000) / 100 : null;
       })(),
     };
   })();
@@ -135,8 +143,8 @@ export default function OverviewPage() {
                   <p className="text-2xl text-[var(--text-primary)]">{formatNumber(parseInt(videos?.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) || 0))}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalViewsYear")}</p>
                   {selectedYear !== "all" && trends?.views != null && (
-                    <span className={`text-xs ${trends.views >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {trends.views >= 0 ? "▲" : "▼"} {Math.abs(trends.views)}% เทียบกับปีที่แล้ว
+                    <span className={`text-xs ${trends.views >= 0 ? "text-green-600" : "text-red-600"} block leading-tight`}>
+                      {trends.views >= 0 ? "▲" : "▼"} {Math.abs(trends.views)}% (ปีที่แล้ว {formatNumber(trends.viewsPrev)} วิว)
                     </span>
                   )}
                 </div>
@@ -144,8 +152,8 @@ export default function OverviewPage() {
                   <p className="text-2xl text-[var(--text-primary)]">{performance.totalVideos}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
                   {selectedYear !== "all" && trends?.videos != null && (
-                    <span className={`text-xs ${trends.videos >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {trends.videos >= 0 ? "▲" : "▼"} {Math.abs(trends.videos)}% เทียบกับปีที่แล้ว
+                    <span className={`text-xs ${trends.videos >= 0 ? "text-green-600" : "text-red-600"} block leading-tight`}>
+                      {trends.videos >= 0 ? "▲" : "▼"} {Math.abs(trends.videos)}% (จำนวน {trends.videosPrev} คลิป)
                     </span>
                   )}
                 </div>
@@ -160,6 +168,20 @@ export default function OverviewPage() {
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{performance.mostActiveMonth}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.mostActive")} ({performance.mostActiveCount})</p>
+                  {selectedYear !== "all" && prevVideos && (() => {
+                    const prevMonthCounts = new Array(12).fill(0);
+                    prevVideos.forEach(v => prevMonthCounts[new Date(v.snippet.publishedAt).getMonth()]++);
+                    const prevMaxIdx = prevMonthCounts.indexOf(Math.max(...prevMonthCounts));
+                    const prevMaxCount = prevMonthCounts[prevMaxIdx];
+                    const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+                    const pct = prevMaxCount > 0 ? Math.round(((performance.mostActiveCount - prevMaxCount) / prevMaxCount) * 100) : null;
+                    if (pct === null) return null;
+                    return (
+                      <span className={`text-xs ${pct >= 0 ? "text-green-600" : "text-red-600"} block leading-tight`}>
+                        {pct >= 0 ? "▲" : "▼"} {Math.abs(pct)}% {monthNames[prevMaxIdx]} (จำนวนคลิป {prevMaxCount})
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
             </Card>
@@ -172,10 +194,10 @@ export default function OverviewPage() {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={trends?.avgViews} />
-            <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={trends?.avgLikes} />
-            <KpiCard label={t("audience.avgCommentsPerVideo")} value={formatNumber(avgComments)} trend={trends?.avgComments} />
-            <KpiCard label={t("audience.avgEngagement")} value={contentPerformance ? `${contentPerformance.avgEngagementRate}%` : "—"} trend={trends?.avgEngagement} />
+            <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={trends?.avgViews} trendLabel={trends ? `(ปีที่แล้ว ${formatNumber(trends.avgViewsPrev)} วิว/คลิป)` : ""} />
+            <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={trends?.avgLikes} trendLabel={trends ? `(ปีที่แล้ว ${formatNumber(trends.avgLikesPrev)} ครั้ง)` : ""} />
+            <KpiCard label={t("audience.avgCommentsPerVideo")} value={formatNumber(avgComments)} trend={trends?.avgComments} trendLabel={trends ? `(ปีที่แล้ว ${formatNumber(trends.avgCommentsPrev)} ครั้ง)` : ""} />
+            <KpiCard label={t("audience.avgEngagement")} value={contentPerformance ? `${contentPerformance.avgEngagementRate}%` : "—"} trend={trends?.avgEngagement} trendLabel={trends?.avgEngagementPrev != null ? `(ปีที่แล้ว ${trends.avgEngagementPrev}%)` : ""} />
           </div>
 
           {contentPerformance && (

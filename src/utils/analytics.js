@@ -35,6 +35,7 @@ export const analyzePerformance = (videos) => {
     avgPerMonth,
     avgGap,
     mostActiveMonth: monthNames[maxMonthIndex],
+    mostActiveMonthIndex: maxMonthIndex,
     mostActiveCount: monthCounts[maxMonthIndex],
   };
 };
