@@ -227,27 +227,24 @@ export default function OverviewPage() {
           )}
 
           {performance && (
-            <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <Card>
-                  <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.uploadPattern")}</h3>
-                  <div className="space-y-2">
-                    {weekdayPattern?.map((d) => (
-                      <div key={d.day} className="flex items-center space-x-3">
-                        <span className="w-16 text-sm text-[var(--text-secondary)]">{d.day}</span>
-                        <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${d.percentage}%` }} />
-                        </div>
-                        <span className="text-sm font-medium text-[var(--text-primary)] w-12 text-right">{d.count}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <TopVideosWidget videos={videos} />
+              <Card>
+                <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.uploadPattern")}</h3>
+                <div className="space-y-2">
+                  {weekdayPattern?.map((d) => (
+                    <div key={d.day} className="flex items-center space-x-3">
+                      <span className="w-16 text-sm text-[var(--text-secondary)]">{d.day}</span>
+                      <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${d.percentage}%` }} />
                       </div>
-                    ))}
-                  </div>
-                </Card>
-              </div>
-            </>
+                      <span className="text-sm font-medium text-[var(--text-primary)] w-12 text-right">{d.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
           )}
-
-          <TopVideosWidget videos={videos} />
         </>
       )}
     </div>
