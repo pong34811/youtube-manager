@@ -73,12 +73,26 @@ export default function OverviewPage() {
     if (sortedYears.length < 2) return null;
     const curr = byYear[sortedYears[0]];
     const prev = byYear[sortedYears[1]];
-    const currViews = curr.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0);
-    const prevViews = prev.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0);
+    const calc = (arr) => ({
+      views: arr.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0),
+      likes: arr.reduce((s, v) => s + parseInt(v.statistics?.likeCount || 0), 0),
+      comments: arr.reduce((s, v) => s + parseInt(v.statistics?.commentCount || 0), 0),
+    });
+    const c = calc(curr), p = calc(prev);
+    const pct = (a, b) => b > 0 ? Math.round(((a - b) / b) * 100) : null;
+    const avg = (n, len) => len > 0 ? Math.round(n / len) : 0;
     return {
-      views: prevViews > 0 ? Math.round(((currViews - prevViews) / prevViews) * 100) : null,
+      views: pct(c.views, p.views),
       subs: null,
-      videos: prev.length > 0 ? Math.round(((curr.length - prev.length) / prev.length) * 100) : null,
+      videos: pct(curr.length, prev.length),
+      avgViews: pct(avg(c.views, curr.length), avg(p.views, prev.length)),
+      avgLikes: pct(avg(c.likes, curr.length), avg(p.likes, prev.length)),
+      avgComments: pct(avg(c.comments, curr.length), avg(p.comments, prev.length)),
+      avgEngagement: (() => {
+        const ce = c.views > 0 ? ((c.likes + c.comments) / c.views) * 100 : 0;
+        const pe = p.views > 0 ? ((p.likes + p.comments) / p.views) * 100 : 0;
+        return pe > 0 ? Math.round((ce - pe) * 100) / 100 : null;
+      })(),
     };
   })();
 
@@ -154,10 +168,10 @@ export default function OverviewPage() {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={0} />
-            <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={0} />
-            <KpiCard label={t("audience.avgCommentsPerVideo")} value={formatNumber(avgComments)} trend={0} />
-            <KpiCard label={t("audience.avgEngagement")} value={contentPerformance ? `${contentPerformance.avgEngagementRate}%` : "—"} trend={0} />
+            <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={trends?.avgViews} />
+            <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={trends?.avgLikes} />
+            <KpiCard label={t("audience.avgCommentsPerVideo")} value={formatNumber(avgComments)} trend={trends?.avgComments} />
+            <KpiCard label={t("audience.avgEngagement")} value={contentPerformance ? `${contentPerformance.avgEngagementRate}%` : "—"} trend={trends?.avgEngagement} />
           </div>
 
           {contentPerformance && (
