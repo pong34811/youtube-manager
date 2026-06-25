@@ -385,7 +385,7 @@ export const analyzeGrowthMetrics = (videosByYear) => {
 };
 
 // Helper function to parse ISO 8601 duration
-function parseDuration(duration) {
+export function parseDuration(duration) {
   const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
   if (!match) return 0;
 

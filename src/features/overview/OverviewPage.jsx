@@ -16,6 +16,7 @@ import {
   analyzeKeywords,
   analyzeTitleLength,
   analyzeContentPerformance,
+  parseDuration,
 } from "../../utils/analytics";
 import { formatNumber } from "../../utils/youtube";
 
@@ -180,6 +181,19 @@ export default function OverviewPage() {
               <Card>
                 <h3 className="text-base text-[var(--text-primary)] mb-1">{t("audience.audiencePreference")}</h3>
                 <p className="text-xs text-[var(--text-secondary)] mb-4">ยอดดูเฉลี่ยแยกตามความยาวคลิป — ช่วยบอกว่าควรทำคลิปยาวเท่าไหร่</p>
+                {videos && (() => {
+                  const longest = videos.reduce((max, v) => {
+                    if (!v.contentDetails?.duration) return max;
+                    const secs = parseDuration(v.contentDetails.duration);
+                    return secs > max.secs ? { secs, title: v.snippet.title, duration: v.contentDetails.duration } : max;
+                  }, { secs: 0, title: "", duration: "" });
+                  if (longest.secs > 0) {
+                    const h = Math.floor(longest.secs / 3600);
+                    const m = Math.floor((longest.secs % 3600) / 60);
+                    return <p className="text-xs text-[var(--text-secondary)] mb-3 max-w-full">📏 คลิปยาวสุด: {h} ชม. {m} นาที</p>;
+                  }
+                  return null;
+                })()}
                 {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 ? (
                   <div className="space-y-3">
                     <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
