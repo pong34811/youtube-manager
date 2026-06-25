@@ -1,5 +1,5 @@
 export default function Button({ children, variant = "primary", size = "md", icon, onClick, disabled, className = "", type = "button" }) {
-  const base = "inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
+  const base = "inline-flex items-center justify-center  rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
   const variants = {
     primary: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
     secondary: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600",

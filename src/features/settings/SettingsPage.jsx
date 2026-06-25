@@ -10,11 +10,11 @@ export default function SettingsPage() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">{t("page.settings")}</h1>
+      <h1 className="text-2xl  text-[var(--text-primary)] mb-6">{t("page.settings")}</h1>
 
       <div className="space-y-6 max-w-2xl">
         <Card>
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("settings.profile")}</h3>
+          <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("settings.profile")}</h3>
           <div className="space-y-3">
             <div>
               <p className="text-sm text-[var(--text-secondary)]">{t("settings.email")}</p>
@@ -28,7 +28,7 @@ export default function SettingsPage() {
         </Card>
 
         <Card>
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("settings.preferences")}</h3>
+          <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("settings.preferences")}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         </Card>
 
         <Card>
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("settings.about")}</h3>
+          <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("settings.about")}</h3>
           <div className="space-y-2 text-sm text-[var(--text-secondary)]">
             <p>YouTube Analytics Dashboard v2.0</p>
             <p>Built with React 19 + Firebase + YouTube Data API v3</p>

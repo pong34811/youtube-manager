@@ -23,7 +23,7 @@ export default function RevenuePage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.revenue")}</h1>
+        <h1 className="text-2xl  text-[var(--text-primary)]">{t("page.revenue")}</h1>
         <div className="w-56">
           <Select
             options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))}

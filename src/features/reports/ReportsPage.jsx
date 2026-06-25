@@ -59,12 +59,12 @@ function ReportsPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.reports")}</h1>
+        <h1 className="text-2xl  text-[var(--text-primary)]">{t("page.reports")}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <Card>
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("reports.configuration")}</h3>
+          <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("reports.configuration")}</h3>
           <div className="space-y-4">
             <Select
               label={t("reports.channel")}
@@ -81,7 +81,7 @@ function ReportsPage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("reports.reportType")}</h3>
+          <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("reports.reportType")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
             {REPORT_TYPES.map((type) => (
               <button
@@ -94,7 +94,7 @@ function ReportsPage() {
                 }`}
               >
                 <span className="text-2xl">{type.icon}</span>
-                <p className="font-semibold text-[var(--text-primary)] mt-1">{t("reports." + type.id)}</p>
+                <p className=" text-[var(--text-primary)] mt-1">{t("reports." + type.id)}</p>
                 <p className="text-xs text-[var(--text-secondary)] mt-1">{t(type.desc)}</p>
               </button>
             ))}

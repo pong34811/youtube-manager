@@ -17,8 +17,10 @@ export default function CategoryBreakdown({ videos, categories }) {
   if (!videos || videos.length === 0) return null;
 
   const groups = {};
+  let noCat = 0;
   videos.forEach((v) => {
-    const catId = v.snippet.categoryId || "unknown";
+    const catId = v.snippet.categoryId;
+    if (!catId) { noCat++; return; }
     if (!groups[catId]) groups[catId] = [];
     groups[catId].push(v);
   });
@@ -27,10 +29,12 @@ export default function CategoryBreakdown({ videos, categories }) {
 
   return (
     <Card>
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-3">หมวดหมู่คลิป</h3>
+      <h3 className="text-base  text-[var(--text-primary)] mb-3">
+        หมวดหมู่คลิป ({videos.length} คลิป)
+      </h3>
       <div className="space-y-1.5">
         {sorted.map((catId) => {
-          const catName = categories[catId] || CATEGORY_NAMES[catId] || `หมวด ${catId}`;
+          const catName = categories[catId] || CATEGORY_NAMES[catId] || `ID:${catId}`;
           return (
             <div key={catId} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <span className="text-sm text-[var(--text-primary)]">{catName}</span>
@@ -38,6 +42,12 @@ export default function CategoryBreakdown({ videos, categories }) {
             </div>
           );
         })}
+        {noCat > 0 && (
+          <div className="flex items-center justify-between py-1.5 px-2 rounded-lg">
+            <span className="text-sm text-gray-400">ไม่ระบุหมวด</span>
+            <span className="text-sm text-gray-400 font-medium">{noCat} คลิป</span>
+          </div>
+        )}
       </div>
     </Card>
   );

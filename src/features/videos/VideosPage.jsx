@@ -37,7 +37,7 @@ export default function VideosPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("videos.title")}</h1>
+        <h1 className="text-2xl  text-[var(--text-primary)]">{t("videos.title")}</h1>
         <div className="flex space-x-3">
           <div className="w-56">
             <Select

@@ -44,7 +44,7 @@ export default function Header() {
           )}
         </button>
 
-        <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+        <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm ">
           {useAuthStore.getState().currentUser?.email?.[0].toUpperCase() || "U"}
         </div>
       </div>

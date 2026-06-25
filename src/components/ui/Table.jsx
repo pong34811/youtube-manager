@@ -5,7 +5,7 @@ export default function Table({ columns, data, onRowClick }) {
         <thead>
           <tr className="border-b border-gray-200 dark:border-gray-700">
             {columns.map((col) => (
-              <th key={col.key} className={`px-4 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider ${col.className || ""}`}>
+              <th key={col.key} className={`px-4 py-3 text-left text-xs  text-[var(--text-secondary)] uppercase tracking-wider ${col.className || ""}`}>
                 {col.label}
               </th>
             ))}

@@ -12,7 +12,7 @@ export default function QuickInsights({ videos }) {
 
   return (
     <Card>
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("overview.quickInsights")}</h3>
+      <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("overview.quickInsights")}</h3>
       <div className="space-y-3">
         {insights.length > 0 ? insights.map((v) => (
           <div key={v.id} className="flex items-center justify-between">

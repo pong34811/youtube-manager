@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
 import { useLocale } from "../../hooks/useLocale";
-import { useVideoCategories } from "../../hooks/useYouTubeApi";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
@@ -10,9 +9,22 @@ import KpiCard from "../../components/ui/KpiCard";
 import KpiRow from "./KpiRow";
 import TopVideosWidget from "./TopVideosWidget";
 import QuickInsights from "./QuickInsights";
-import CategoryBreakdown from "./CategoryBreakdown";
-import { analyzePerformance, analyzeWeekdayPattern, analyzeKeywords, analyzeTitleLength } from "../../utils/analytics";
+import Badge from "../../components/ui/Badge";
+import {
+  analyzePerformance,
+  analyzeWeekdayPattern,
+  analyzeKeywords,
+  analyzeTitleLength,
+  analyzeContentPerformance,
+} from "../../utils/analytics";
 import { formatNumber } from "../../utils/youtube";
+
+const durationLabels = {
+  "สั้น (< 5 นาที)": "audience.short",
+  "ปานกลาง (5-15 นาที)": "audience.medium",
+  "ยาว (15-30 นาที)": "audience.long",
+  "ยาวมาก (> 30 นาที)": "audience.veryLong",
+};
 
 export default function OverviewPage() {
   const { t } = useLocale();
@@ -25,7 +37,6 @@ export default function OverviewPage() {
   const currentYear = new Date().getFullYear();
   const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
   const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
-  const { data: categories } = useVideoCategories(selectedConfig?.apiKey);
 
   const isLoading = channelLoading || videosLoading;
 
@@ -39,6 +50,11 @@ export default function OverviewPage() {
   const avgLikes = videos?.length > 0
     ? Math.round(videos.reduce((s, v) => s + parseInt(v.statistics?.likeCount || 0), 0) / videos.length)
     : 0;
+  const avgComments = videos?.length > 0
+    ? Math.round(videos.reduce((s, v) => s + parseInt(v.statistics?.commentCount || 0), 0) / videos.length)
+    : 0;
+
+  const contentPerformance = videos ? analyzeContentPerformance(videos) : null;
 
   const yearOptions = Array.from({ length: 5 }, (_, i) => {
     const y = currentYear - i;
@@ -48,7 +64,7 @@ export default function OverviewPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.overview")}</h1>
+        <h1 className="text-2xl  text-[var(--text-primary)]">{t("page.overview")}</h1>
         <div className="flex space-x-3">
           <div className="w-56">
             <Select
@@ -67,33 +83,101 @@ export default function OverviewPage() {
         <div className="flex justify-center py-20"><Spinner /></div>
       ) : (
         <>
+          {performance && (
+            <Card className="mb-6">
+              <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.performanceOverview")}</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-2xl text-[var(--text-primary)]">{performance.totalVideos}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-2xl text-[var(--text-primary)]">{performance.avgPerMonth}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgPerMonth")}</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-2xl text-[var(--text-primary)]">{performance.avgGap}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgGap")}</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-2xl text-[var(--text-primary)]">{performance.mostActiveMonth}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t("analytics.mostActive")} ({performance.mostActiveCount})</p>
+                </div>
+              </div>
+            </Card>
+          )}
+
           <KpiRow
             totalViews={parseInt(channelData?.statistics?.viewCount || 0)}
             totalSubs={parseInt(channelData?.statistics?.subscriberCount || 0)}
-            totalWatchTime={0}
             totalVideos={parseInt(channelData?.statistics?.videoCount || 0)}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <TopVideosWidget videos={videos} />
-            <div className="space-y-6">
-              <QuickInsights videos={videos} />
-              <CategoryBreakdown videos={videos} categories={categories || {}} />
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={0} />
-            <KpiCard label={t("analytics.avgCtr")} value="—" trend={0} />
-            <KpiCard label={t("analytics.avgRetention")} value="—" trend={0} />
             <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={0} />
+            <KpiCard label={t("audience.avgCommentsPerVideo")} value={formatNumber(avgComments)} trend={0} />
+            <KpiCard label={t("audience.avgEngagement")} value={contentPerformance ? `${contentPerformance.avgEngagementRate}%` : "—"} trend={0} />
           </div>
+
+          {contentPerformance && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.topContent")}</h3>
+                {contentPerformance.topByEngagement.length > 0 ? (
+                  <div className="space-y-3">
+                    {contentPerformance.topByEngagement.slice(0, 5).map((v, i) => (
+                      <div key={v.id} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <span className="text-sm  text-[var(--text-secondary)] w-6 mt-1">{i + 1}.</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">{v.snippet.title}</p>
+                          <div className="flex space-x-2 mt-1">
+                            <Badge variant={v.engagementRate > 10 ? "success" : v.engagementRate > 5 ? "info" : "warning"}>
+                              {v.engagementRate}% {t("audience.engagement")}
+                            </Badge>
+                            <span className="text-xs text-[var(--text-secondary)]">{formatNumber(v.views)} {t("audience.views")}</span>
+                            <span className="text-xs text-[var(--text-secondary)]">{new Date(v.snippet.publishedAt).toLocaleDateString("en-GB")}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-[var(--text-secondary)] py-8 text-center">{t("audience.noData")}</p>
+                )}
+              </Card>
+              <Card>
+                <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.audiencePreference")}</h3>
+                {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
+                    {contentPerformance.durationPerformance.filter((d) => d.count > 0).map((d) => (
+                      <div key={d.range} className="flex items-center space-x-3">
+                        <span className="text-sm text-[var(--text-secondary)] w-36">{t(durationLabels[d.range] || d.range)}</span>
+                        <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-violet-500 rounded-full transition-all"
+                            style={{ width: `${Math.min(100, (d.totalViews / Math.max(...contentPerformance.durationPerformance.filter((x) => x.count > 0).map((x) => x.totalViews))) * 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-[var(--text-primary)] w-20 text-right">
+                          {formatNumber(d.avgViews)} avg
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-[var(--text-secondary)] py-8 text-center">{t("audience.noDuration")}</p>
+                )}
+              </Card>
+            </div>
+          )}
 
           {performance && (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <Card>
-                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.uploadPattern")}</h3>
+                  <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.uploadPattern")}</h3>
                   <div className="space-y-2">
                     {weekdayPattern?.map((d) => (
                       <div key={d.day} className="flex items-center space-x-3">
@@ -107,7 +191,7 @@ export default function OverviewPage() {
                   </div>
                 </Card>
                 <Card>
-                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.contentAnalysis")}</h3>
+                  <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.contentAnalysis")}</h3>
                   <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">{t("analytics.topKeywords")}</h4>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {keywords?.map((k) => (
@@ -132,29 +216,15 @@ export default function OverviewPage() {
                 </Card>
               </div>
 
-              <Card>
-                <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.performanceOverview")}</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.totalVideos}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.avgPerMonth}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgPerMonth")}</p>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.avgGap}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgGap")}</p>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.mostActiveMonth}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.mostActive")} ({performance.mostActiveCount})</p>
-                  </div>
-                </div>
-              </Card>
             </>
           )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <TopVideosWidget videos={videos} />
+            <div className="space-y-6">
+              <QuickInsights videos={videos} />
+            </div>
+          </div>
         </>
       )}
     </div>

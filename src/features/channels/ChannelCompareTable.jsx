@@ -6,7 +6,7 @@ export default function ChannelCompareTable({ channels }) {
 
   return (
     <div className="bg-[var(--bg-primary)] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm mt-6">
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("channels.compare")}</h3>
+      <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("channels.compare")}</h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>

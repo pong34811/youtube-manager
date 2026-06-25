@@ -8,8 +8,12 @@ export const fetchChannelData = async (apiKey, channelId) => {
 };
 
 export const fetchChannelVideosForYear = async (apiKey, channelId, year) => {
-  const startDate = new Date(year, 0, 1).toISOString();
-  const endDate = new Date(year + 1, 0, 1).toISOString();
+  const toBangkokISO = (y, m, d) => {
+    const date = new Date(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T00:00:00+07:00`);
+    return date.toISOString();
+  };
+  const startDate = toBangkokISO(year, 1, 1);
+  const endDate = toBangkokISO(year + 1, 1, 1);
   let searchResults = [];
   let nextPageToken = "";
 

@@ -7,8 +7,6 @@ import LoginPage from "./features/auth/LoginPage";
 import OverviewPage from "./features/overview/OverviewPage";
 import ChannelsPage from "./features/channels/ChannelsPage";
 import VideosPage from "./features/videos/VideosPage";
-import RevenuePage from "./features/revenue/RevenuePage";
-import AudiencePage from "./features/audience/AudiencePage";
 import ReportsPage from "./features/reports/ReportsPage";
 import SettingsPage from "./features/settings/SettingsPage";
 import { useEffect } from "react";
@@ -32,8 +30,6 @@ function App() {
             <Route index element={<OverviewPage />} />
             <Route path="channels" element={<ChannelsPage />} />
             <Route path="videos" element={<VideosPage />} />
-            <Route path="revenue" element={<RevenuePage />} />
-            <Route path="audience" element={<AudiencePage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>

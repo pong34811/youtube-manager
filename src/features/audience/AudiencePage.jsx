@@ -56,7 +56,7 @@ export default function AudiencePage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.audience")}</h1>
+        <h1 className="text-2xl  text-[var(--text-primary)]">{t("page.audience")}</h1>
         <div className="w-56">
           <Select
             options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))}
@@ -78,16 +78,16 @@ export default function AudiencePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card>
-              <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("audience.engagementOverview")}</h3>
+              <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.engagementOverview")}</h3>
               {performance ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.avgEngagementRate}%</p>
+                      <p className="text-2xl  text-[var(--text-primary)]">{performance.avgEngagementRate}%</p>
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.avgEngagement")}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">
+                      <p className="text-2xl  text-[var(--text-primary)]">
                         {videos && videos.length > 0
                           ? formatNumber(Math.round(videos.reduce((s, v) => s + parseInt(v.statistics?.likeCount || 0), 0) / videos.length))
                           : 0}
@@ -95,7 +95,7 @@ export default function AudiencePage() {
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.avgLikesPerVideo")}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">
+                      <p className="text-2xl  text-[var(--text-primary)]">
                         {videos && videos.length > 0
                           ? formatNumber(Math.round(videos.reduce((s, v) => s + parseInt(v.statistics?.commentCount || 0), 0) / videos.length))
                           : 0}
@@ -122,12 +122,12 @@ export default function AudiencePage() {
             </Card>
 
             <Card>
-              <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("audience.topContent")}</h3>
+              <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.topContent")}</h3>
               {performance && performance.topByEngagement.length > 0 ? (
                 <div className="space-y-3">
                   {performance.topByEngagement.slice(0, 5).map((v, i) => (
                     <div key={v.id} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                      <span className="text-sm font-bold text-[var(--text-secondary)] w-6 mt-1">{i + 1}.</span>
+                      <span className="text-sm  text-[var(--text-secondary)] w-6 mt-1">{i + 1}.</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-[var(--text-primary)] truncate">{v.snippet.title}</p>
                         <div className="flex space-x-2 mt-1">
@@ -148,7 +148,7 @@ export default function AudiencePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("audience.audiencePreference")}</h3>
+              <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.audiencePreference")}</h3>
               {performance && performance.durationPerformance.length > 0 ? (
                 <div className="space-y-3">
                   <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
@@ -176,26 +176,26 @@ export default function AudiencePage() {
             </Card>
 
             <Card>
-              <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("audience.uploadConsistency")}</h3>
+              <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("audience.uploadConsistency")}</h3>
               {uploadStats ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">{uploadStats.totalVideos}</p>
+                      <p className="text-2xl  text-[var(--text-primary)]">{uploadStats.totalVideos}</p>
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.videosThisYear")}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">{uploadStats.avgPerMonth}/mo</p>
+                      <p className="text-2xl  text-[var(--text-primary)]">{uploadStats.avgPerMonth}/mo</p>
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.uploadFrequency")}</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">{uploadStats.avgGap} days</p>
+                      <p className="text-2xl  text-[var(--text-primary)]">{uploadStats.avgGap} days</p>
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.avgGap")}</p>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <p className="text-2xl font-bold text-[var(--text-primary)]">{uploadStats.mostActiveMonth}</p>
+                      <p className="text-2xl  text-[var(--text-primary)]">{uploadStats.mostActiveMonth}</p>
                       <p className="text-xs text-[var(--text-secondary)]">{t("audience.mostActive")} ({uploadStats.mostActiveCount} videos)</p>
                     </div>
                   </div>

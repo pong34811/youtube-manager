@@ -6,11 +6,11 @@ export default function ChannelCard({ channel, onEdit, onDelete, onCompare, isSe
     <div className={`bg-[var(--bg-primary)] rounded-xl border p-5 shadow-sm transition-all hover:shadow-md ${isSelected ? "border-indigo-500 ring-2 ring-indigo-500/20" : "border-gray-200 dark:border-gray-700"}`}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center text-white font-bold">
+          <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center text-white ">
             {channel.channelName?.[0] || "C"}
           </div>
           <div>
-            <h3 className="font-semibold text-[var(--text-primary)]">{channel.channelName || t("channels.unnamed")}</h3>
+            <h3 className=" text-[var(--text-primary)]">{channel.channelName || t("channels.unnamed")}</h3>
             <p className="text-xs text-[var(--text-secondary)]">{t("channels.api")} {channel.apiKey?.substring(0, 8)}...</p>
           </div>
         </div>
