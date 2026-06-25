@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocale } from "../../hooks/useLocale";
 import useAuthStore from "../../stores/authStore";
 import { checkUserEmail } from "../../lib/api";
 
 export default function LoginPage() {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ text: "", type: "" });
@@ -14,7 +16,7 @@ export default function LoginPage() {
     e.preventDefault();
     const trimmedEmail = email.trim().toLowerCase();
     if (!trimmedEmail.endsWith("@gmail.com")) {
-      setStatus({ text: "กรุณากรอก Gmail ที่ถูกต้อง", type: "error" });
+      setStatus({ text: t("auth.invalidGmail"), type: "error" });
       return;
     }
     setLoading(true);
@@ -24,10 +26,10 @@ export default function LoginPage() {
         login(user);
         navigate("/", { replace: true });
       } else {
-        setStatus({ text: "ไม่พบ Gmail นี้ในระบบ กรุณาติดต่อผู้ดูแลระบบ", type: "error" });
+        setStatus({ text: t("auth.notFound"), type: "error" });
       }
     } catch {
-      setStatus({ text: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ", type: "error" });
+      setStatus({ text: t("auth.error"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -44,17 +46,17 @@ export default function LoginPage() {
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2 tracking-tight">YouTube Insight</h1>
-            <p className="text-gray-500 font-medium">เข้าสู่ระบบเพื่อจัดการข้อมูลของคุณ</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2 tracking-tight">{t("app.name")}</h1>
+            <p className="text-gray-500 font-medium">{t("auth.subtitle")}</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 ml-1">Gmail Address</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 ml-1">{t("auth.gmailAddress")}</label>
               <div className="relative group">
                 <input
                   type="email" required value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="example@gmail.com"
+                  placeholder={t("auth.gmailPlaceholder")}
                   className="w-full px-5 py-4 pl-12 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-red-500 focus:bg-white transition-all outline-none text-gray-800 placeholder-gray-400"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute left-4 top-4 group-focus-within:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +67,7 @@ export default function LoginPage() {
             <button type="submit" disabled={loading}
               className="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/30 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{loading ? "กำลังตรวจสอบ..." : "เข้าสู่ระบบ"}</span>
+              <span>{loading ? t("auth.checking") : t("auth.login")}</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -77,7 +79,7 @@ export default function LoginPage() {
             </div>
           )}
         </div>
-        <p className="text-center text-white/40 text-sm mt-8">&copy; 2024 YouTube Data Manager. All rights reserved.</p>
+        <p className="text-center text-white/40 text-sm mt-8">{t("auth.footer")}</p>
       </div>
     </div>
   );

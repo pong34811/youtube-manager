@@ -1,13 +1,15 @@
+import { useLocale } from "../../hooks/useLocale";
 import Card from "../../components/ui/Card";
 import { formatNumber } from "../../utils/youtube";
 import { getTopVideos } from "../../utils/analytics";
 
 export default function TopVideosWidget({ videos }) {
+  const { t } = useLocale();
   const top = getTopVideos(videos || []);
 
   return (
     <Card>
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Top 10 Videos</h3>
+      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("overview.topVideos")}</h3>
       <div className="space-y-3">
         {top.map((v, i) => (
           <div key={v.id} className="flex items-center space-x-3">
@@ -20,7 +22,7 @@ export default function TopVideosWidget({ videos }) {
             </div>
           </div>
         ))}
-        {top.length === 0 && <p className="text-sm text-[var(--text-secondary)]">No video data available</p>}
+        {top.length === 0 && <p className="text-sm text-[var(--text-secondary)]">{t("overview.noVideos")}</p>}
       </div>
     </Card>
   );

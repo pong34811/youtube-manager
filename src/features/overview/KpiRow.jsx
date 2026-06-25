@@ -1,6 +1,8 @@
+import { useLocale } from "../../hooks/useLocale";
 import KpiCard from "../../components/ui/KpiCard";
 
 export default function KpiRow({ totalViews, totalSubs, totalWatchTime, revenue, totalVideos }) {
+  const { t } = useLocale();
   const format = (n) => {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
     if (n >= 1000) return (n / 1000).toFixed(1) + "K";
@@ -8,11 +10,11 @@ export default function KpiRow({ totalViews, totalSubs, totalWatchTime, revenue,
   };
 
   const kpis = [
-    { label: "Total Views", value: format(totalViews), trend: 12, icon: "👁" },
-    { label: "Total Subscribers", value: format(totalSubs), trend: 5, icon: "👥" },
-    { label: "Watch Time (hrs)", value: format(totalWatchTime), trend: 8, icon: "⏱" },
-    { label: "Revenue", value: revenue ? `$${format(revenue)}` : "—", trend: -2, icon: "💰" },
-    { label: "Published Videos", value: totalVideos?.toLocaleString() || "0", trend: 3, icon: "🎬" },
+    { label: t("overview.totalViews"), value: format(totalViews), trend: 12, icon: "👁" },
+    { label: t("overview.totalSubs"), value: format(totalSubs), trend: 5, icon: "👥" },
+    { label: t("overview.watchTime"), value: format(totalWatchTime), trend: 8, icon: "⏱" },
+    { label: t("overview.revenue"), value: revenue ? `$${format(revenue)}` : "—", trend: -2, icon: "💰" },
+    { label: t("overview.publishedVideos"), value: totalVideos?.toLocaleString() || "0", trend: 3, icon: "🎬" },
   ];
 
   return (

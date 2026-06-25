@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
+import { useLocale } from "../../hooks/useLocale";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
 import KpiRow from "./KpiRow";
@@ -8,6 +9,7 @@ import TopVideosWidget from "./TopVideosWidget";
 import QuickInsights from "./QuickInsights";
 
 export default function OverviewPage() {
+  const { t } = useLocale();
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
@@ -22,7 +24,7 @@ export default function OverviewPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Overview</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.overview")}</h1>
         <div className="w-64">
           <Select
             options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
+import { useLocale } from "../../hooks/useLocale";
 import { useChannelVideos } from "../../hooks/useYouTubeApi";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
@@ -10,6 +11,7 @@ import VideoTable from "./VideoTable";
 import VideoDetailModal from "./VideoDetailModal";
 
 export default function VideosPage() {
+  const { t } = useLocale();
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
@@ -24,7 +26,7 @@ export default function VideosPage() {
     const likes = parseInt(v.statistics?.likeCount || 0);
     const ctr = views > 0 ? ((likes / views) * 100).toFixed(1) : 0;
     const type = views > 100000 ? "success" : ctr < 2 ? "danger" : "info";
-    return { id: v.id, title: v.snippet.title, label: views > 100000 ? "🔥 Viral" : ctr < 2 ? "⚠ Low CTR" : "Normal", type };
+    return { id: v.id, title: v.snippet.title, label: views > 100000 ? t("videos.viral") : ctr < 2 ? t("videos.lowCtr") : t("videos.normal"), type };
   });
 
   const yearOptions = Array.from({ length: 5 }, (_, i) => {
@@ -35,7 +37,7 @@ export default function VideosPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Videos</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("videos.title")}</h1>
         <div className="flex space-x-3">
           <div className="w-56">
             <Select
@@ -61,7 +63,7 @@ export default function VideosPage() {
         <div className="flex justify-center py-20"><Spinner /></div>
       ) : !videos || videos.length === 0 ? (
         <Card>
-          <EmptyState title="No Videos Found" description="No videos for this channel and year combination." />
+          <EmptyState title={t("videos.noVideos")} description={t("videos.noVideosDesc")} />
         </Card>
       ) : (
         <Card padding={false}>

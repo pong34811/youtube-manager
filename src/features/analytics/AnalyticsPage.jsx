@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocale } from "../../hooks/useLocale";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelVideos } from "../../hooks/useYouTubeApi";
 import Card from "../../components/ui/Card";
@@ -9,6 +10,7 @@ import { analyzePerformance, analyzeWeekdayPattern, analyzeKeywords, analyzeTitl
 import { formatNumber } from "../../utils/youtube";
 
 export default function AnalyticsPage() {
+  const { t } = useLocale();
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
@@ -36,7 +38,7 @@ export default function AnalyticsPage() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Analytics</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{t("page.analytics")}</h1>
         <div className="flex space-x-3">
           <div className="w-56">
             <Select options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))} value={configId} onChange={setSelectedConfigId} />
@@ -50,17 +52,17 @@ export default function AnalyticsPage() {
       {isLoading ? <div className="flex justify-center py-20"><Spinner /></div> : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KpiCard label="Avg Views" value={formatNumber(avgViews)} trend={0} />
-            <KpiCard label="Avg CTR" value="—" trend={0} />
-            <KpiCard label="Avg Retention" value="—" trend={0} />
-            <KpiCard label="Avg Likes" value={formatNumber(avgLikes)} trend={0} />
+            <KpiCard label={t("analytics.avgViews")} value={formatNumber(avgViews)} trend={0} />
+            <KpiCard label={t("analytics.avgCtr")} value="—" trend={0} />
+            <KpiCard label={t("analytics.avgRetention")} value="—" trend={0} />
+            <KpiCard label={t("analytics.avgLikes")} value={formatNumber(avgLikes)} trend={0} />
           </div>
 
           {performance && (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <Card>
-                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Upload Pattern</h3>
+                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.uploadPattern")}</h3>
                   <div className="space-y-2">
                     {weekdayPattern?.map((d) => (
                       <div key={d.day} className="flex items-center space-x-3">
@@ -74,8 +76,8 @@ export default function AnalyticsPage() {
                   </div>
                 </Card>
                 <Card>
-                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Content Analysis</h3>
-                  <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">Top Keywords</h4>
+                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.contentAnalysis")}</h3>
+                  <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">{t("analytics.topKeywords")}</h4>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {keywords?.map((k) => (
                       <span key={k.word} className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 rounded text-xs font-medium">
@@ -85,7 +87,7 @@ export default function AnalyticsPage() {
                   </div>
                   {titleLen && (
                     <>
-                      <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">Title Length</h4>
+                      <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">{t("analytics.titleLength")}</h4>
                       <div className="space-y-1">
                         {titleLen.categories.map((cat) => (
                           <div key={cat.range} className="flex items-center justify-between text-sm">
@@ -100,23 +102,23 @@ export default function AnalyticsPage() {
               </div>
 
               <Card>
-                <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Performance Overview</h3>
+                <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">{t("analytics.performanceOverview")}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.totalVideos}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">Total Videos</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
                   </div>
                   <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.avgPerMonth}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">Avg/Month</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgPerMonth")}</p>
                   </div>
                   <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.avgGap}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">Avg Gap (days)</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.avgGap")}</p>
                   </div>
                   <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p className="text-2xl font-bold text-[var(--text-primary)]">{performance.mostActiveMonth}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">Most Active ({performance.mostActiveCount})</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t("analytics.mostActive")} ({performance.mostActiveCount})</p>
                   </div>
                 </div>
               </Card>
