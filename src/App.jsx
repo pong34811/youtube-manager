@@ -9,9 +9,18 @@ import ChannelsPage from "./features/channels/ChannelsPage";
 import VideosPage from "./features/videos/VideosPage";
 import ReportsPage from "./features/reports/ReportsPage";
 import SettingsPage from "./features/settings/SettingsPage";
+import UsersPage from "./features/users/UsersPage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+function RequireAdmin({ children }) {
+  const { currentUser } = useAuthStore();
+  if (currentUser?.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function App() {
   const { currentUser } = useAuthStore();
@@ -28,9 +37,10 @@ function App() {
           <Route path="/login" element={currentUser ? <Navigate to="/" replace /> : <LoginPage />} />
           <Route element={<MainLayout />}>
             <Route index element={<OverviewPage />} />
-            <Route path="channels" element={<ChannelsPage />} />
+            <Route path="channels" element={<RequireAdmin><ChannelsPage /></RequireAdmin>} />
             <Route path="videos" element={<VideosPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="users" element={<RequireAdmin><UsersPage /></RequireAdmin>} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

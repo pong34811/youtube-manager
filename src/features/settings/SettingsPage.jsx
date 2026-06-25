@@ -22,7 +22,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <p className="text-sm text-[var(--text-secondary)]">{t("settings.role")}</p>
-              <p className="text-[var(--text-primary)] font-medium">Administrator</p>
+              <p className="text-[var(--text-primary)] font-medium">{currentUser?.role === "admin" ? "ผู้ดูแลระบบ" : "ผู้ใช้"}</p>
             </div>
           </div>
         </Card>

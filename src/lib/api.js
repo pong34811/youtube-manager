@@ -1,4 +1,4 @@
-import { ref, onValue, get } from "firebase/database";
+import { ref, onValue, get, push, update, remove } from "firebase/database";
 import { database } from "../firebase";
 
 export const subscribeConfigs = (callback) => {
@@ -21,4 +21,24 @@ export const checkUserEmail = async (email) => {
     }
   });
   return found;
+};
+
+export const subscribeUsers = (callback) => {
+  const usersRef = ref(database, "users");
+  return onValue(usersRef, (snapshot) => {
+    callback(snapshot.val() || {});
+  });
+};
+
+export const addUser = async (userData) => {
+  const usersRef = ref(database, "users");
+  return push(usersRef, { ...userData, createdAt: new Date().toLocaleString("en-GB") });
+};
+
+export const updateUser = async (id, userData) => {
+  return update(ref(database, `users/${id}`), userData);
+};
+
+export const deleteUser = async (id) => {
+  return remove(ref(database, `users/${id}`));
 };
