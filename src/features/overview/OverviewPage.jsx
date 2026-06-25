@@ -46,8 +46,6 @@ export default function OverviewPage() {
 
   const performance = videos ? analyzePerformance(videos) : null;
   const weekdayPattern = videos ? analyzeWeekdayPattern(videos) : null;
-  const keywords = videos ? analyzeKeywords(videos) : null;
-  const titleLen = videos ? analyzeTitleLength(videos) : null;
   const avgViews = videos?.length > 0
     ? Math.round(videos.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) / videos.length)
     : 0;
