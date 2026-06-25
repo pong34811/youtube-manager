@@ -21,7 +21,7 @@ import {
 import { formatNumber } from "../../utils/youtube";
 
 const durationLabels = {
-  "สั้นกว่า 30 วิ": "audience.under30s",
+  "สั้นมาก (< 30 วิ)": "audience.under30s",
   "30 วิ ถึง 59 วิ": "audience.30to59s",
   "1 - 2.59 นาที": "audience.1to3min",
   "3 - 4.59 นาที": "audience.3to5min",

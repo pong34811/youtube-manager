@@ -221,7 +221,7 @@ export const analyzeContentPerformance = (videos) => {
 
   // Analyze video duration performance
   const durationGroups = {
-    "สั้นกว่า 30 วิ": [],
+    "สั้นมาก (< 30 วิ)": [],
     "30 วิ ถึง 59 วิ": [],
     "1 - 2.59 นาที": [],
     "3 - 4.59 นาที": [],
@@ -237,7 +237,7 @@ export const analyzeContentPerformance = (videos) => {
     const duration = parseDuration(v.contentDetails.duration);
     const views = parseInt(v.statistics.viewCount || 0);
 
-    if (duration < 30) durationGroups["สั้นกว่า 30 วิ"].push(views);
+    if (duration < 30) durationGroups["สั้นมาก (< 30 วิ)"].push(views);
     else if (duration < 60) durationGroups["30 วิ ถึง 59 วิ"].push(views);
     else if (duration < 180) durationGroups["1 - 2.59 นาที"].push(views);
     else if (duration < 300) durationGroups["3 - 4.59 นาที"].push(views);
