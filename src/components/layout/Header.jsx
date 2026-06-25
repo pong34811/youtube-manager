@@ -1,10 +1,12 @@
 import useSidebarStore from "../../stores/sidebarStore";
 import useThemeStore from "../../stores/themeStore";
 import useAuthStore from "../../stores/authStore";
+import { useLocale } from "../../hooks/useLocale";
 
 export default function Header() {
   const { setMobileOpen } = useSidebarStore();
   const { theme, toggleTheme } = useThemeStore();
+  const { locale, toggleLocale } = useLocale();
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-[var(--bg-primary)] border-b border-gray-200 dark:border-gray-700 flex items-center px-4 lg:px-6">
@@ -19,7 +21,14 @@ export default function Header() {
 
       <div className="flex-1" />
 
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={toggleLocale}
+          className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-sm font-medium text-[var(--text-primary)] transition-colors"
+        >
+          {locale === "th" ? "EN" : "TH"}
+        </button>
+
         <button
           onClick={toggleTheme}
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
