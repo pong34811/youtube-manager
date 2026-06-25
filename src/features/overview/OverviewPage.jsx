@@ -121,7 +121,11 @@ export default function OverviewPage() {
           {performance && (
             <Card className="mb-6">
               <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.performanceOverview")}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-2xl text-[var(--text-primary)]">{formatNumber(parseInt(videos?.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) || 0))}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalViewsYear")}</p>
+                </div>
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{performance.totalVideos}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalVideos")}</p>
