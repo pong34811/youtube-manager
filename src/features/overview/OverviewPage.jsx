@@ -134,6 +134,11 @@ export default function OverviewPage() {
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{formatNumber(parseInt(videos?.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) || 0))}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalViewsYear")}</p>
+                  {selectedYear !== "all" && trends?.views != null && (
+                    <span className={`text-xs ${trends.views >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {trends.views >= 0 ? "▲" : "▼"} {Math.abs(trends.views)}% เทียบกับปีที่แล้ว
+                    </span>
+                  )}
                 </div>
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <p className="text-2xl text-[var(--text-primary)]">{performance.totalVideos}</p>
@@ -159,7 +164,6 @@ export default function OverviewPage() {
             totalViews={parseInt(channelData?.statistics?.viewCount || 0)}
             totalSubs={parseInt(channelData?.statistics?.subscriberCount || 0)}
             totalVideos={parseInt(channelData?.statistics?.videoCount || 0)}
-            trends={trends}
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
