@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ref, push, update, remove } from "firebase/database";
+import { ref, push, update } from "firebase/database";
 import { database } from "../../firebase";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/Button";

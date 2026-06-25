@@ -1,5 +1,3 @@
-import { formatDuration } from "./youtube";
-
 export const analyzePerformance = (videos) => {
   const totalVideos = videos.length;
   const avgPerMonth = (totalVideos / 12).toFixed(1);

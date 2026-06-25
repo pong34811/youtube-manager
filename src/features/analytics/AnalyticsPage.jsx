@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
-import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
+import { useChannelVideos } from "../../hooks/useYouTubeApi";
 import Card from "../../components/ui/Card";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
