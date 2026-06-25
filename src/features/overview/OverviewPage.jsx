@@ -8,13 +8,10 @@ import Card from "../../components/ui/Card";
 import KpiCard from "../../components/ui/KpiCard";
 import KpiRow from "./KpiRow";
 import TopVideosWidget from "./TopVideosWidget";
-import QuickInsights from "./QuickInsights";
 import Badge from "../../components/ui/Badge";
 import {
   analyzePerformance,
   analyzeWeekdayPattern,
-  analyzeKeywords,
-  analyzeTitleLength,
   analyzeContentPerformance,
   parseDuration,
 } from "../../utils/analytics";
@@ -248,41 +245,11 @@ export default function OverviewPage() {
                     ))}
                   </div>
                 </Card>
-                <Card>
-                  <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.contentAnalysis")}</h3>
-                  <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">{t("analytics.topKeywords")}</h4>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {keywords?.map((k) => (
-                      <span key={k.word} className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 rounded text-xs font-medium">
-                        {k.word} ({k.count})
-                      </span>
-                    ))}
-                  </div>
-                  {titleLen && (
-                    <>
-                      <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">{t("analytics.titleLength")}</h4>
-                      <div className="space-y-1">
-                        {titleLen.categories.map((cat) => (
-                          <div key={cat.range} className="flex items-center justify-between text-sm">
-                            <span className="text-[var(--text-secondary)]">{cat.range}</span>
-                            <span className="text-[var(--text-primary)] font-medium">{cat.count} ({cat.percentage}%)</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </Card>
               </div>
-
             </>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <TopVideosWidget videos={videos} />
-            <div className="space-y-6">
-              <QuickInsights videos={videos} />
-            </div>
-          </div>
+          <TopVideosWidget videos={videos} />
         </>
       )}
     </div>
