@@ -199,20 +199,20 @@ export default function OverviewPage() {
                   }
                   return null;
                 })()}
-                {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 ? (
+                {contentPerformance.durationPerformance.length > 0 ? (
                   <div className="space-y-3">
                     <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
-                    {contentPerformance.durationPerformance.filter((d) => d.count > 0).map((d) => (
+                    {contentPerformance.durationPerformance.map((d) => (
                       <div key={d.range} className="flex items-center space-x-3">
                         <span className="text-sm text-[var(--text-secondary)] w-36 shrink-0">{t(durationLabels[d.range] || d.range)}</span>
                         <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-violet-500 rounded-full transition-all"
-                            style={{ width: `${Math.min(100, (d.totalViews / Math.max(...contentPerformance.durationPerformance.filter((x) => x.count > 0).map((x) => x.totalViews))) * 100)}%` }}
+                            style={{ width: `${d.count > 0 ? Math.min(100, (d.totalViews / Math.max(...contentPerformance.durationPerformance.map((x) => x.totalViews))) * 100) : 0}%` }}
                           />
                         </div>
                         <span className="text-xs text-[var(--text-primary)] w-32 text-right whitespace-nowrap">
-                          {d.count} คลิป · {formatNumber(d.avgViews)} วิว/คลิป
+                          {d.count > 0 ? `${d.count} คลิป · ${formatNumber(d.avgViews)} วิว/คลิป` : "0 คลิป"}
                         </span>
                       </div>
                     ))}
@@ -220,11 +220,13 @@ export default function OverviewPage() {
                   ) : (
                   <p className="text-sm text-[var(--text-secondary)] py-8 text-center">{t("audience.noDuration")}</p>
                 )}
-                {contentPerformance.durationPerformance.filter((d) => d.count > 0).length > 0 && (
-                  <p className="text-xs text-[var(--text-secondary)] mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                    💡 สรุป: ช่วง "{t(durationLabels[contentPerformance.durationPerformance.filter((d) => d.count > 0).sort((a, b) => b.avgViews - a.avgViews)[0]?.range] || contentPerformance.durationPerformance.filter((d) => d.count > 0).sort((a, b) => b.avgViews - a.avgViews)[0]?.range)}" มียอดดูเฉลี่ยสูงสุด
-                  </p>
-                )}
+                {contentPerformance.durationPerformance.length > 0 && (() => {
+                  const best = contentPerformance.durationPerformance.filter((d) => d.count > 0).sort((a, b) => b.avgViews - a.avgViews)[0];
+                  if (!best) return null;
+                  return <p className="text-xs text-[var(--text-secondary)] mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                    💡 สรุป: ช่วง "{t(durationLabels[best.range] || best.range)}" มียอดดูเฉลี่ยสูงสุด
+                  </p>;
+                })()}
               </Card>
             </div>
           )}
