@@ -4,6 +4,7 @@ import useAuthStore from "./stores/authStore";
 import useThemeStore from "./stores/themeStore";
 import MainLayout from "./components/layout/MainLayout";
 import LoginPage from "./features/auth/LoginPage";
+import OverviewPage from "./features/overview/OverviewPage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -22,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/login" element={currentUser ? <Navigate to="/" replace /> : <LoginPage />} />
           <Route element={<MainLayout />}>
-            <Route index element={<div className="text-[var(--text-primary)]">Overview Page</div>} />
+            <Route index element={<OverviewPage />} />
             <Route path="channels" element={<div className="text-[var(--text-primary)]">Channels Page</div>} />
             <Route path="videos" element={<div className="text-[var(--text-primary)]">Videos Page</div>} />
             <Route path="analytics" element={<div className="text-[var(--text-primary)]">Analytics Page</div>} />
