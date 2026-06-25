@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelVideos } from "../../hooks/useYouTubeApi";
 import Card from "../../components/ui/Card";
@@ -12,15 +12,9 @@ export default function AnalyticsPage() {
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
-
-  useEffect(() => {
-    if (!selectedConfigId && configList.length > 0) {
-      setSelectedConfigId(configList[0].id);
-    }
-  }, [configs, selectedConfigId]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
-  const selectedConfig = configList.find((c) => c.id === selectedConfigId);
+  const configId = selectedConfigId || configList[0]?.id || "";
+  const selectedConfig = configList.find((c) => c.id === configId);
   const { data: videos, isLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
 
   const performance = videos ? analyzePerformance(videos) : null;
@@ -45,7 +39,7 @@ export default function AnalyticsPage() {
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">Analytics</h1>
         <div className="flex space-x-3">
           <div className="w-56">
-            <Select options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))} value={selectedConfigId} onChange={setSelectedConfigId} />
+            <Select options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))} value={configId} onChange={setSelectedConfigId} />
           </div>
           <div className="w-32">
             <Select options={yearOptions} value={selectedYear} onChange={(v) => setSelectedYear(Number(v))} />

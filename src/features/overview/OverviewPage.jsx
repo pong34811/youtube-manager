@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
 import Select from "../../components/ui/Select";
@@ -11,14 +11,8 @@ export default function OverviewPage() {
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
-
-  useEffect(() => {
-    if (!selectedConfigId && configList.length > 0) {
-      setSelectedConfigId(configList[0].id);
-    }
-  }, [configs, selectedConfigId]);
-
-  const selectedConfig = configList.find((c) => c.id === selectedConfigId);
+  const configId = selectedConfigId || configList[0]?.id || "";
+  const selectedConfig = configList.find((c) => c.id === configId);
   const currentYear = new Date().getFullYear();
   const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
   const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, currentYear);
@@ -32,7 +26,7 @@ export default function OverviewPage() {
         <div className="w-64">
           <Select
             options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))}
-            value={selectedConfigId}
+            value={configId}
             onChange={setSelectedConfigId}
           />
         </div>

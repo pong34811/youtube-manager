@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelInfo } from "../../hooks/useYouTubeApi";
 import Card from "../../components/ui/Card";
@@ -11,13 +11,8 @@ export default function RevenuePage() {
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
   const [selectedConfigId, setSelectedConfigId] = useState("");
-
-  useEffect(() => {
-    if (!selectedConfigId && configList.length > 0) {
-      setSelectedConfigId(configList[0].id);
-    }
-  }, [configs, selectedConfigId]);
-  const selectedConfig = configList.find((c) => c.id === selectedConfigId);
+  const configId = selectedConfigId || configList[0]?.id || "";
+  const selectedConfig = configList.find((c) => c.id === configId);
   const { data: channelData } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
 
   const totalViews = parseInt(channelData?.statistics?.viewCount || 0);
@@ -30,7 +25,7 @@ export default function RevenuePage() {
         <div className="w-56">
           <Select
             options={configList.map((c) => ({ value: c.id, label: c.channelName || c.id }))}
-            value={selectedConfigId} onChange={setSelectedConfigId}
+            value={configId} onChange={setSelectedConfigId}
           />
         </div>
       </div>
