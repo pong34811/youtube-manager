@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
 import { useLocale } from "../../hooks/useLocale";
+import { useVideoCategories } from "../../hooks/useYouTubeApi";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
@@ -9,6 +10,7 @@ import KpiCard from "../../components/ui/KpiCard";
 import KpiRow from "./KpiRow";
 import TopVideosWidget from "./TopVideosWidget";
 import QuickInsights from "./QuickInsights";
+import CategoryBreakdown from "./CategoryBreakdown";
 import { analyzePerformance, analyzeWeekdayPattern, analyzeKeywords, analyzeTitleLength } from "../../utils/analytics";
 import { formatNumber } from "../../utils/youtube";
 
@@ -23,6 +25,7 @@ export default function OverviewPage() {
   const currentYear = new Date().getFullYear();
   const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
   const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
+  const { data: categories } = useVideoCategories(selectedConfig?.apiKey);
 
   const isLoading = channelLoading || videosLoading;
 
@@ -73,7 +76,10 @@ export default function OverviewPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <TopVideosWidget videos={videos} />
-            <QuickInsights videos={videos} />
+            <div className="space-y-6">
+              <QuickInsights videos={videos} />
+              <CategoryBreakdown videos={videos} categories={categories || {}} />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

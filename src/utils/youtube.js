@@ -47,6 +47,21 @@ export const fetchChannelVideosForYear = async (apiKey, channelId, year) => {
   }
 };
 
+export const fetchVideoCategories = async (apiKey) => {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=TH&key=${apiKey}`
+  );
+  const data = await response.json();
+  if (data.error) return {};
+  const map = {};
+  (data.items || []).forEach((cat) => {
+    if (cat.snippet.assignable) {
+      map[cat.id] = cat.snippet.title;
+    }
+  });
+  return map;
+};
+
 export const formatNumber = (num) => {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
   if (num >= 1000) return (num / 1000).toFixed(1) + "K";
