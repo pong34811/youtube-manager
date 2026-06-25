@@ -5,6 +5,7 @@ import useThemeStore from "./stores/themeStore";
 import MainLayout from "./components/layout/MainLayout";
 import LoginPage from "./features/auth/LoginPage";
 import OverviewPage from "./features/overview/OverviewPage";
+import ChannelsPage from "./features/channels/ChannelsPage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ function App() {
           <Route path="/login" element={currentUser ? <Navigate to="/" replace /> : <LoginPage />} />
           <Route element={<MainLayout />}>
             <Route index element={<OverviewPage />} />
-            <Route path="channels" element={<div className="text-[var(--text-primary)]">Channels Page</div>} />
+            <Route path="channels" element={<ChannelsPage />} />
             <Route path="videos" element={<div className="text-[var(--text-primary)]">Videos Page</div>} />
             <Route path="analytics" element={<div className="text-[var(--text-primary)]">Analytics Page</div>} />
             <Route path="revenue" element={<div className="text-[var(--text-primary)]">Revenue Page</div>} />
