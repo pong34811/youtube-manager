@@ -21,14 +21,14 @@ import {
 import { formatNumber } from "../../utils/youtube";
 
 const durationLabels = {
-  "สั้นมาก (< 30 วิ)": "audience.veryShort",
+  "สั้นกว่า 30 วิ": "audience.under30s",
   "30 วิ ถึง 59 วิ": "audience.30to59s",
-  "1 - 3 นาที": "audience.1to3min",
-  "3 - 5 นาที": "audience.3to5min",
-  "ปานกลาง (5-15 นาที)": "audience.medium",
-  "ยาว (15-30 นาที)": "audience.long",
-  "30 นาที ถึง 1 ชั่วโมง": "audience.30to1h",
-  "1 ชั่วโมง ถึง 3 ชั่วโมง": "audience.1to3h",
+  "1 - 2.59 นาที": "audience.1to3min",
+  "3 - 4.59 นาที": "audience.3to5min",
+  "5 - 14.59 นาที": "audience.5to15min",
+  "15 - 29.59 นาที": "audience.15to30min",
+  "30 นาที ถึง 59.59 นาที": "audience.30to1h",
+  "1 ชั่วโมง ถึง 2.59 ชั่วโมง": "audience.1to3h",
   "ยาวมาก (> 3 ชั่วโมง)": "audience.veryLong",
 };
 
