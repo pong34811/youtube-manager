@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import { useChannelVideos } from "../../hooks/useYouTubeApi";
 import Select from "../../components/ui/Select";
@@ -12,7 +12,13 @@ import VideoDetailModal from "./VideoDetailModal";
 export default function VideosPage() {
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
-  const [selectedConfigId, setSelectedConfigId] = useState(configList[0]?.id || "");
+  const [selectedConfigId, setSelectedConfigId] = useState("");
+
+  useEffect(() => {
+    if (!selectedConfigId && configList.length > 0) {
+      setSelectedConfigId(configList[0].id);
+    }
+  }, [configs, selectedConfigId]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedVideo, setSelectedVideo] = useState(null);
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
 import Card from "../../components/ui/Card";
 import Select from "../../components/ui/Select";
@@ -7,7 +7,13 @@ import EmptyState from "../../components/ui/EmptyState";
 export default function AudiencePage() {
   const { configs } = useAllConfigs();
   const configList = Object.entries(configs).map(([id, c]) => ({ id, ...c }));
-  const [selectedConfigId, setSelectedConfigId] = useState(configList[0]?.id || "");
+  const [selectedConfigId, setSelectedConfigId] = useState("");
+
+  useEffect(() => {
+    if (!selectedConfigId && configList.length > 0) {
+      setSelectedConfigId(configList[0].id);
+    }
+  }, [configs, selectedConfigId]);
 
   return (
     <div className="animate-fade-in">
