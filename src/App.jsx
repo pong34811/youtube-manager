@@ -7,6 +7,11 @@ import LoginPage from "./features/auth/LoginPage";
 import OverviewPage from "./features/overview/OverviewPage";
 import ChannelsPage from "./features/channels/ChannelsPage";
 import VideosPage from "./features/videos/VideosPage";
+import AnalyticsPage from "./features/analytics/AnalyticsPage";
+import RevenuePage from "./features/revenue/RevenuePage";
+import AudiencePage from "./features/audience/AudiencePage";
+import ReportsPage from "./features/reports/ReportsPage";
+import SettingsPage from "./features/settings/SettingsPage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -28,11 +33,11 @@ function App() {
             <Route index element={<OverviewPage />} />
             <Route path="channels" element={<ChannelsPage />} />
             <Route path="videos" element={<VideosPage />} />
-            <Route path="analytics" element={<div className="text-[var(--text-primary)]">Analytics Page</div>} />
-            <Route path="revenue" element={<div className="text-[var(--text-primary)]">Revenue Page</div>} />
-            <Route path="audience" element={<div className="text-[var(--text-primary)]">Audience Page</div>} />
-            <Route path="reports" element={<div className="text-[var(--text-primary)]">Reports Page</div>} />
-            <Route path="settings" element={<div className="text-[var(--text-primary)]">Settings Page</div>} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="revenue" element={<RevenuePage />} />
+            <Route path="audience" element={<AudiencePage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
