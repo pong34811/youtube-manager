@@ -43,8 +43,10 @@ export default function OverviewPage() {
   const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
   const yearParam = selectedYear === "all" ? null : Number(selectedYear);
   const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, yearParam);
+  const prevYear = selectedYear !== "all" ? Number(selectedYear) - 1 : null;
+  const { data: prevVideos, isLoading: prevLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, prevYear);
 
-  const isLoading = channelLoading || videosLoading;
+  const isLoading = channelLoading || videosLoading || prevLoading;
 
   const performance = videos ? analyzePerformance(videos) : null;
   const weekdayPattern = videos ? analyzeWeekdayPattern(videos) : null;
@@ -62,17 +64,10 @@ export default function OverviewPage() {
 
   // Compute year-over-year trends from video data
   const trends = (() => {
-    if (!videos || videos.length < 2) return null;
-    const byYear = {};
-    videos.forEach(v => {
-      const y = new Date(v.snippet.publishedAt).getFullYear();
-      if (!byYear[y]) byYear[y] = [];
-      byYear[y].push(v);
-    });
-    const sortedYears = Object.keys(byYear).sort((a, b) => b - a);
-    if (sortedYears.length < 2) return null;
-    const curr = byYear[sortedYears[0]];
-    const prev = byYear[sortedYears[1]];
+    if (selectedYear === "all") return null;
+    const curr = videos || [];
+    const prev = prevVideos || [];
+    if (!curr.length || !prev.length) return null;
     const calc = (arr) => ({
       views: arr.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0),
       likes: arr.reduce((s, v) => s + parseInt(v.statistics?.likeCount || 0), 0),
