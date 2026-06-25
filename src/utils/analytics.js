@@ -221,10 +221,15 @@ export const analyzeContentPerformance = (videos) => {
 
   // Analyze video duration performance
   const durationGroups = {
-    "สั้น (< 5 นาที)": [],
+    "สั้นมาก (< 30 วิ)": [],
+    "30 วิ ถึง 59 วิ": [],
+    "1 - 3 นาที": [],
+    "3 - 5 นาที": [],
     "ปานกลาง (5-15 นาที)": [],
     "ยาว (15-30 นาที)": [],
-    "ยาวมาก (> 30 นาที)": [],
+    "30 นาที ถึง 1 ชั่วโมง": [],
+    "1 ชั่วโมง ถึง 3 ชั่วโมง": [],
+    "ยาวมาก (> 3 ชั่วโมง)": [],
   };
 
   videos.forEach((v) => {
@@ -232,10 +237,15 @@ export const analyzeContentPerformance = (videos) => {
     const duration = parseDuration(v.contentDetails.duration);
     const views = parseInt(v.statistics.viewCount || 0);
 
-    if (duration < 300) durationGroups["สั้น (< 5 นาที)"].push(views);
+    if (duration < 30) durationGroups["สั้นมาก (< 30 วิ)"].push(views);
+    else if (duration < 60) durationGroups["30 วิ ถึง 59 วิ"].push(views);
+    else if (duration < 180) durationGroups["1 - 3 นาที"].push(views);
+    else if (duration < 300) durationGroups["3 - 5 นาที"].push(views);
     else if (duration < 900) durationGroups["ปานกลาง (5-15 นาที)"].push(views);
     else if (duration < 1800) durationGroups["ยาว (15-30 นาที)"].push(views);
-    else durationGroups["ยาวมาก (> 30 นาที)"].push(views);
+    else if (duration < 3600) durationGroups["30 นาที ถึง 1 ชั่วโมง"].push(views);
+    else if (duration < 10800) durationGroups["1 ชั่วโมง ถึง 3 ชั่วโมง"].push(views);
+    else durationGroups["ยาวมาก (> 3 ชั่วโมง)"].push(views);
   });
 
   const durationPerformance = Object.entries(durationGroups).map(

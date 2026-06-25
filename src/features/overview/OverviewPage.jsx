@@ -21,10 +21,15 @@ import {
 import { formatNumber } from "../../utils/youtube";
 
 const durationLabels = {
-  "สั้น (< 5 นาที)": "audience.short",
+  "สั้นมาก (< 30 วิ)": "audience.veryShort",
+  "30 วิ ถึง 59 วิ": "audience.30to59s",
+  "1 - 3 นาที": "audience.1to3min",
+  "3 - 5 นาที": "audience.3to5min",
   "ปานกลาง (5-15 นาที)": "audience.medium",
   "ยาว (15-30 นาที)": "audience.long",
-  "ยาวมาก (> 30 นาที)": "audience.veryLong",
+  "30 นาที ถึง 1 ชั่วโมง": "audience.30to1h",
+  "1 ชั่วโมง ถึง 3 ชั่วโมง": "audience.1to3h",
+  "ยาวมาก (> 3 ชั่วโมง)": "audience.veryLong",
 };
 
 export default function OverviewPage() {
@@ -199,15 +204,15 @@ export default function OverviewPage() {
                     <p className="text-sm text-[var(--text-secondary)] mb-2">{t("audience.viewsByLength")}</p>
                     {contentPerformance.durationPerformance.filter((d) => d.count > 0).map((d) => (
                       <div key={d.range} className="flex items-center space-x-3">
-                        <span className="text-sm text-[var(--text-secondary)] w-36">{t(durationLabels[d.range] || d.range)}</span>
+                        <span className="text-sm text-[var(--text-secondary)] w-36 shrink-0">{t(durationLabels[d.range] || d.range)}</span>
                         <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-violet-500 rounded-full transition-all"
                             style={{ width: `${Math.min(100, (d.totalViews / Math.max(...contentPerformance.durationPerformance.filter((x) => x.count > 0).map((x) => x.totalViews))) * 100)}%` }}
                           />
                         </div>
-                        <span className="text-sm font-medium text-[var(--text-primary)] w-20 text-right">
-                          {formatNumber(d.avgViews)} avg
+                        <span className="text-xs text-[var(--text-primary)] w-32 text-right whitespace-nowrap">
+                          {d.count} คลิป · {formatNumber(d.avgViews)} วิว/คลิป
                         </span>
                       </div>
                     ))}
