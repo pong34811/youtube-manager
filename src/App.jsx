@@ -7,7 +7,6 @@ import LoginPage from "./features/auth/LoginPage";
 import OverviewPage from "./features/overview/OverviewPage";
 import ChannelsPage from "./features/channels/ChannelsPage";
 import VideosPage from "./features/videos/VideosPage";
-import AnalyticsPage from "./features/analytics/AnalyticsPage";
 import RevenuePage from "./features/revenue/RevenuePage";
 import AudiencePage from "./features/audience/AudiencePage";
 import ReportsPage from "./features/reports/ReportsPage";
@@ -33,7 +32,6 @@ function App() {
             <Route index element={<OverviewPage />} />
             <Route path="channels" element={<ChannelsPage />} />
             <Route path="videos" element={<VideosPage />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="revenue" element={<RevenuePage />} />
             <Route path="audience" element={<AudiencePage />} />
             <Route path="reports" element={<ReportsPage />} />
