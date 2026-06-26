@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAllConfigs } from "../../hooks/useChannelData";
-import { useChannelInfo, useChannelVideos } from "../../hooks/useYouTubeApi";
+import { useChannelInfo, useAllChannelVideos } from "../../hooks/useYouTubeApi";
 import { useLocale } from "../../hooks/useLocale";
 import Select from "../../components/ui/Select";
 import Spinner from "../../components/ui/Spinner";
@@ -40,13 +40,18 @@ export default function OverviewPage() {
   const configId = selectedConfigId || configList[0]?.id || "";
   const selectedConfig = configList.find((c) => c.id === configId);
   const currentYear = new Date().getFullYear();
-  const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
+  const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.channelId);
+  const { data: allVideos, isLoading: allVideosLoading } = useAllChannelVideos(selectedConfig?.channelId);
   const yearParam = selectedYear === "all" ? null : Number(selectedYear);
-  const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, yearParam);
   const prevYear = selectedYear !== "all" ? Number(selectedYear) - 1 : null;
-  const { data: prevVideos, isLoading: prevLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, prevYear);
+  const videos = allVideos && yearParam != null
+    ? allVideos.filter(v => new Date(v.snippet.publishedAt).getFullYear() === yearParam)
+    : allVideos;
+  const prevVideos = allVideos && prevYear != null
+    ? allVideos.filter(v => new Date(v.snippet.publishedAt).getFullYear() === prevYear)
+    : [];
 
-  const isLoading = channelLoading || videosLoading || prevLoading;
+  const isLoading = channelLoading || allVideosLoading;
 
   const performance = videos ? analyzePerformance(videos) : null;
   const weekdayPattern = videos ? analyzeWeekdayPattern(videos) : null;
@@ -140,7 +145,15 @@ export default function OverviewPage() {
               <h3 className="text-base  text-[var(--text-primary)] mb-4">{t("analytics.performanceOverview")}</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-2xl text-[var(--text-primary)]">{formatNumber(parseInt(videos?.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) || 0))}</p>
+                  <p className="text-2xl text-[var(--text-primary)]">
+                    {formatNumber(
+                      selectedYear !== "all" && Number(selectedYear) === currentYear && allVideos
+                        ? parseInt(channelData?.statistics?.viewCount || 0) - allVideos
+                            .filter(v => new Date(v.snippet.publishedAt).getFullYear() < currentYear)
+                            .reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0)
+                        : videos?.reduce((s, v) => s + parseInt(v.statistics?.viewCount || 0), 0) || 0
+                    )}
+                  </p>
                   <p className="text-xs text-[var(--text-secondary)]">{t("analytics.totalViewsYear")}</p>
                   {selectedYear !== "all" && trends?.views != null && (
                     <span className={`text-xs ${trends.views >= 0 ? "text-green-600" : "text-red-600"} block leading-tight`}>

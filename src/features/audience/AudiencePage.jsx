@@ -30,15 +30,8 @@ export default function AudiencePage() {
   const configId = selectedConfigId || configList[0]?.id || "";
   const selectedConfig = configList.find((c) => c.id === configId);
   const currentYear = new Date().getFullYear();
-  const { data: channelData, isLoading: channelLoading } = useChannelInfo(
-    selectedConfig?.apiKey,
-    selectedConfig?.channelId
-  );
-  const { data: videos, isLoading: videosLoading } = useChannelVideos(
-    selectedConfig?.apiKey,
-    selectedConfig?.channelId,
-    currentYear
-  );
+  const { data: channelData, isLoading: channelLoading } = useChannelInfo(selectedConfig?.channelId);
+  const { data: videos, isLoading: videosLoading } = useChannelVideos(selectedConfig?.channelId, currentYear);
 
   const isLoading = channelLoading || videosLoading;
 

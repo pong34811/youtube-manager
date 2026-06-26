@@ -19,7 +19,7 @@ export default function VideosPage() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const configId = selectedConfigId || configList[0]?.id || "";
   const selectedConfig = configList.find((c) => c.id === configId);
-  const { data: videos, isLoading } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
+  const { data: videos, isLoading } = useChannelVideos(selectedConfig?.channelId, selectedYear);
 
   const insightCards = (videos || []).slice(0, 3).map((v) => {
     const views = parseInt(v.statistics?.viewCount || 0);

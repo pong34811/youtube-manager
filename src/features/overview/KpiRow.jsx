@@ -3,11 +3,7 @@ import KpiCard from "../../components/ui/KpiCard";
 
 export default function KpiRow({ totalViews, totalSubs, totalVideos }) {
   const { t } = useLocale();
-  const format = (n) => {
-    if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-    if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-    return n?.toLocaleString() || "0";
-  };
+  const format = (n) => n?.toLocaleString() || "0";
 
   const kpis = [
     { label: t("overview.totalViews"), value: format(totalViews), icon: "👁" },

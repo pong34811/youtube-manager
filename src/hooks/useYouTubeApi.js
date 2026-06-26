@@ -1,29 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchChannelData, fetchChannelVideosForYear, fetchVideoCategories } from "../utils/youtube";
 
-export function useChannelInfo(apiKey, channelId) {
+export function useChannelInfo(channelId) {
   return useQuery({
-    queryKey: ["channel", apiKey, channelId],
-    queryFn: () => fetchChannelData(apiKey, channelId),
-    enabled: !!apiKey && !!channelId,
+    queryKey: ["channel", channelId],
+    queryFn: () => fetchChannelData(channelId),
+    enabled: !!channelId,
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useChannelVideos(apiKey, channelId, year) {
+export function useChannelVideos(channelId, year) {
   return useQuery({
-    queryKey: ["videos", apiKey, channelId, year],
-    queryFn: () => fetchChannelVideosForYear(apiKey, channelId, year),
-    enabled: !!apiKey && !!channelId && year !== undefined,
+    queryKey: ["videos", channelId, year],
+    queryFn: () => fetchChannelVideosForYear(channelId, year),
+    enabled: !!channelId && year !== undefined,
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useVideoCategories(apiKey) {
+export function useAllChannelVideos(channelId) {
   return useQuery({
-    queryKey: ["categories", apiKey],
-    queryFn: () => fetchVideoCategories(apiKey),
-    enabled: !!apiKey,
+    queryKey: ["allChannelVideos", channelId],
+    queryFn: () => fetchChannelVideosForYear(channelId, null),
+    enabled: !!channelId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useVideoCategories() {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: () => fetchVideoCategories(),
     staleTime: 24 * 60 * 60 * 1000,
   });
 }

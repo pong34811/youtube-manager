@@ -15,7 +15,7 @@ export default function RevenuePage() {
   const [selectedConfigId, setSelectedConfigId] = useState("");
   const configId = selectedConfigId || configList[0]?.id || "";
   const selectedConfig = configList.find((c) => c.id === configId);
-  const { data: channelData } = useChannelInfo(selectedConfig?.apiKey, selectedConfig?.channelId);
+  const { data: channelData } = useChannelInfo(selectedConfig?.channelId);
 
   const totalViews = parseInt(channelData?.statistics?.viewCount || 0);
   const estimatedRevenue = totalViews * 0.002;

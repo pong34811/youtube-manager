@@ -26,7 +26,7 @@ function ReportsPage() {
   const [generating, setGenerating] = useState(false);
   const configId = selectedConfigId || configList[0]?.id || "";
   const selectedConfig = configList.find((c) => c.id === configId);
-  const { data: videos } = useChannelVideos(selectedConfig?.apiKey, selectedConfig?.channelId, selectedYear);
+  const { data: videos } = useChannelVideos(selectedConfig?.channelId, selectedYear);
 
   const generateReport = () => {
     if (!videos || videos.length === 0) return;

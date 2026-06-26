@@ -1,48 +1,80 @@
-export const fetchChannelData = async (apiKey, channelId) => {
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`
+import { getNextKey, markKeyFailed } from "./apiKeyManager";
+
+async function fetchWithFallback(urlFn, maxRetries = 15) {
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const apiKey = await getNextKey();
+    if (!apiKey) throw new Error("No API key configured");
+    try {
+      const response = await fetch(urlFn(apiKey));
+      const data = await response.json();
+      if (data.error) {
+        const isQuota = data.error.code === 403 || data.error.code === 429;
+        if (isQuota) {
+          markKeyFailed(apiKey);
+          lastError = new Error(data.error.message);
+          continue;
+        }
+        throw new Error(data.error.message);
+      }
+      return data;
+    } catch (err) {
+      if (err.name === "AbortError") throw err;
+      if (err.message?.includes("quota") || err.message?.includes("dailyLimit") || err.message?.includes("exceeded") || err.message?.includes("rateLimit")) {
+        lastError = err;
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastError || new Error("All API keys exhausted");
+}
+
+export const fetchChannelData = async (channelId) => {
+  const data = await fetchWithFallback(
+    (key) => `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${key}`
   );
-  const data = await response.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.items[0];
+  return data.items?.[0];
 };
 
-export const fetchChannelVideosForYear = async (apiKey, channelId, year) => {
-  const toBangkokISO = (y, m, d) => {
-    const date = new Date(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T00:00:00+07:00`);
-    return date.toISOString();
-  };
-  const hasYearFilter = year != null;
-  const startDate = hasYearFilter ? toBangkokISO(year, 1, 1) : null;
-  const endDate = hasYearFilter ? toBangkokISO(year + 1, 1, 1) : null;
-  let searchResults = [];
+export const fetchChannelVideosForYear = async (channelId, year) => {
+  const uploadsPlaylistId = channelId.replace("UC", "UU");
+  let allVideoIds = [];
   let nextPageToken = "";
 
   try {
     do {
-      let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=50&key=${apiKey}`;
-      if (hasYearFilter) url += `&publishedAfter=${startDate}&publishedBefore=${endDate}`;
-      if (nextPageToken) url += "&pageToken=" + nextPageToken;
-      const response = await fetch(url);
-      const data = await response.json();
+      const urlFn = (key) => {
+        let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId=${uploadsPlaylistId}&key=${key}`;
+        if (nextPageToken) url += "&pageToken=" + nextPageToken;
+        return url;
+      };
+      const data = await fetchWithFallback(urlFn);
       if (data.error) throw new Error(data.error.message);
-      searchResults = searchResults.concat(data.items || []);
+      allVideoIds = allVideoIds.concat(
+        (data.items || []).map((item) => item.contentDetails.videoId)
+      );
       nextPageToken = data.nextPageToken || "";
     } while (nextPageToken);
 
-    if (searchResults.length === 0) return [];
+    if (allVideoIds.length === 0) return [];
 
-    const videoIds = searchResults.map((item) => item.id.videoId);
     let detailedVideos = [];
 
-    for (let i = 0; i < videoIds.length; i += 50) {
-      const chunk = videoIds.slice(i, i + 50);
+    for (let i = 0; i < allVideoIds.length; i += 50) {
+      const chunk = allVideoIds.slice(i, i + 50);
       const idsString = chunk.join(",");
-      const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${idsString}&key=${apiKey}`;
-      const statsResponse = await fetch(statsUrl);
-      const statsData = await statsResponse.json();
-      if (statsData.error) throw new Error(statsData.error.message);
-      detailedVideos = detailedVideos.concat(statsData.items || []);
+      const data = await fetchWithFallback(
+        (key) => `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${idsString}&key=${key}`
+      );
+      detailedVideos = detailedVideos.concat(data.items || []);
+    }
+
+    if (year != null) {
+      detailedVideos = detailedVideos.filter((v) => {
+        const y = new Date(v.snippet.publishedAt).getFullYear();
+        return y === year;
+      });
     }
 
     return detailedVideos;
@@ -52,25 +84,26 @@ export const fetchChannelVideosForYear = async (apiKey, channelId, year) => {
   }
 };
 
-export const fetchVideoCategories = async (apiKey) => {
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=TH&key=${apiKey}`
-  );
-  const data = await response.json();
-  if (data.error) return {};
-  const map = {};
-  (data.items || []).forEach((cat) => {
-    if (cat.snippet.assignable) {
-      map[cat.id] = cat.snippet.title;
-    }
-  });
-  return map;
+export const fetchVideoCategories = async () => {
+  try {
+    const data = await fetchWithFallback(
+      (key) => `https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=TH&key=${key}`
+    );
+    const map = {};
+    (data.items || []).forEach((cat) => {
+      if (cat.snippet.assignable) {
+        map[cat.id] = cat.snippet.title;
+      }
+    });
+    return map;
+  } catch {
+    return {};
+  }
 };
 
 export const formatNumber = (num) => {
-  if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
-  if (num >= 1000) return (num / 1000).toFixed(1) + "K";
-  return num.toString();
+  if (num == null) return "0";
+  return Number(num).toLocaleString();
 };
 
 export const formatDuration = (duration) => {
